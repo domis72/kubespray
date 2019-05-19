@@ -47,7 +47,7 @@ resource "null_resource" "ansible_host_provision" {
 # copy vault file for redhat subscription to ansible host, master[0]
   provisioner "file" {
     source      = "../../password"
-    destination = "/home/${var.admin_username}/k8s-kubespray/password"
+    destination = "/home/${var.admin_username}/kubespray/password"
   }
 }
 
