@@ -4,16 +4,16 @@
 dashboard_enabled: true
 
 # Helm deployment
-helm_enabled: false
+helm_enabled: true
 
 # Registry deployment
-registry_enabled: false
+registry_enabled: true
 # registry_namespace: kube-system
 # registry_storage_class: ""
 # registry_disk_size: "10Gi"
 
 # Metrics Server deployment
-metrics_server_enabled: false
+metrics_server_enabled: true
 # metrics_server_kubelet_insecure_tls: true
 # metrics_server_metric_resolution: 60s
 # metrics_server_kubelet_preferred_address_types: "InternalIP"
@@ -76,7 +76,7 @@ rbd_provisioner_enabled: false
 # rbd_provisioner_reclaim_policy: Delete
 
 # Nginx ingress controller deployment
-ingress_nginx_enabled: false
+ingress_nginx_enabled: true
 # ingress_nginx_host_network: false
 # ingress_nginx_nodeselector:
 #   beta.kubernetes.io/os: "linux"
