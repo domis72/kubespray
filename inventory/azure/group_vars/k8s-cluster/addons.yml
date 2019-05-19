@@ -1,4 +1,19 @@
 ---
+
+############# kin
+
+efk_enabled: true
+efk_storage_class: "{{ volume_storage_class_name }}"
+efk_namespace: "logging"
+efk_disk_size: "5Gi"
+
+#  monitoring deployment depending on helm
+monitoring_enabled: true
+monitoring_namespace: "monitoring"
+monitoring_storage_class: "{{ volume_storage_class_name }}"
+############## kin 
+
+
 # Kubernetes dashboard
 # RBAC required. see docs/getting-started.md for access details.
 dashboard_enabled: true

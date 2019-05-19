@@ -1,43 +1,20 @@
 ---
-
+########## kin
 bootstrap_os: centos
+cloud_provider: azure
 
 # disable swap
 disable_swap: true
 ansible_swaptotal_mb: 1
+########## kin
 
-docker_container_storage_setup: false
 
 ## Directory where etcd data stored
 etcd_data_dir: /var/lib/etcd
 
-efk_enabled: true
-efk_storage_class: "{{ volume_storage_class_name }}"
-efk_namespace: "logging"
-efk_disk_size: "5Gi"
-
-#  monitoring deployment depending on helm
-monitoring_enabled: true
-monitoring_namespace: "monitoring"
-monitoring_storage_class: "{{ volume_storage_class_name }}"
-
 ## Directory where the binaries will be installed
 bin_dir: /usr/local/bin
 
-cloud_provider: azure
-# azure volume provisioning
-azure_provisioner_enabled: True
-volume_provisioner_name: kubernetes.io/azure-disk
-volume_storage_class_name: azure-k8s-sc
-
-azure_resource_group: "k8s"
-azure_subnet_name:  
-  - "k8s-node-subnet"
-  - "k8s-master-subnet"
-azure_security_group_name: "k8s-node-nsg" # only single string allowed not list. why?
-azure_vnet_name: "k8s-net"
-azure_vnet_resource_group: "k8s" 
-azure_route_table_name: "k8s-routetable"
 
 ## The access_ip variable is used to define how other nodes should access
 ## the node.  This is used in flannel to allow other flannel nodes to see
