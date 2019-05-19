@@ -11,6 +11,10 @@ docker_container_storage_setup: false
 ## Directory where etcd data stored
 etcd_data_dir: /var/lib/etcd
 
+efk_enabled: true
+efk_storage_class: "{{ volume_storage_class_name }}"
+efk_namespace: "logging"
+efk_disk_size: "5Gi"
 
 #  monitoring deployment depending on helm
 monitoring_enabled: true
