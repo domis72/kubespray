@@ -9,7 +9,7 @@
 - hosts: kube-master[0]
   gather_facts:  False
   roles:
-  - { role: ../roles/kubernetes-apps/monitoring, when: helm_enabled and monitoring_enabled, tags: [apps, monitoring]}
+  - { role: kubernetes-apps/monitoring, when: helm_enabled and monitoring_enabled, tags: [apps, monitoring]}
 
 - hosts: kube-master[0]
   gather_facts:  False
@@ -34,4 +34,4 @@
 - hosts: kube-master[0]
   gather_facts:  False
   roles:
-  - { role: ../roles/kubernetes-apps/backup, when: backup_enabled, tags: [apps, backup] }
+  - { role: kubernetes-apps/backup, when: backup_enabled, tags: [apps, backup] }
