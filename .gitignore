@@ -97,3 +97,16 @@ target/
 # virtualenv
 venv/
 ENV/
+
+
+######### kin ########
+.vscode 
+.terraform
+.DS_STORE
+.terraform
+terraform.tfvars
+.terraform.tfstate*
+.DS_STORE
+password
+*.out
+ansible.pem% 

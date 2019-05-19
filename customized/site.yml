@@ -1,0 +1,37 @@
+---
+
+- import_playbook: util-disable-firewalld.yml
+
+- import_playbook: util-redhat-subscription.yml
+
+- import_playbook: ../cluster.yml
+
+- hosts: kube-master[0]
+  gather_facts:  False
+  roles:
+  - { role: ../roles/kubernetes-apps/monitoring, when: helm_enabled and monitoring_enabled, tags: [apps, monitoring]}
+
+- hosts: kube-master[0]
+  gather_facts:  False
+  tasks:
+  - name: NGINX Ingress Controller | Create manifests for monitoring, logging, dashboard and registry
+    template:
+      src: "templates/ingress.yml.j2"
+      dest: "{{ kube_config_dir }}/addons/ingress_nginx/ingress.yml"
+    tags:
+      - expose
+      - apps
+
+  - name: NGINX Ingress Controller | Apply ingress for for monitoring, logging, dashboard and registry
+    kube:
+      kubectl: "{{ bin_dir }}/kubectl"
+      filename: "{{ kube_config_dir }}/addons/ingress_nginx/ingress.yml"
+      state: "latest"
+    tags:
+      - expose
+      - apps
+
+- hosts: kube-master[0]
+  gather_facts:  False
+  roles:
+  - { role: ../roles/kubernetes-apps/backup, when: backup_enabled, tags: [apps, backup] }
