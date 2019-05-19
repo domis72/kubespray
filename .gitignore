@@ -109,4 +109,4 @@ terraform.tfvars
 .DS_STORE
 password
 *.out
-ansible.pem% 
+ansible.pem
