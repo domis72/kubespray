@@ -11,6 +11,12 @@ docker_container_storage_setup: false
 ## Directory where etcd data stored
 etcd_data_dir: /var/lib/etcd
 
+
+#  monitoring deployment depending on helm
+monitoring_enabled: true
+monitoring_namespace: "monitoring"
+monitoring_storage_class: "{{ volume_storage_class_name }}"
+
 ## Directory where the binaries will be installed
 bin_dir: /usr/local/bin
 
