@@ -4,6 +4,9 @@
 kubeadm_enabled: false
 offline_install: true
 #docker_rh_repo_base_url: <private repo>
+# disable swap
+disable_swap: true
+ansible_swaptotal_mb: 1
 
 k8s_data_home: "/k8s"
 k8s_addon_home: "{{k8s_data_home}}/addons"
@@ -15,10 +18,8 @@ etcd_backup_schedule: "* 0 * * *" # every 12:00 AM
 etcd_storage_class: "azure-k8s-sc"
 #when use host path instead of persistemvolume for backup, remove etcd_storage class and add etcd_backup path
 etcd_disk_size: 20Gi
+
 # if etcd_storage_class is none, then hostpath is used
-
-
-
 etcd_backup_prefix: "{{k8s_data_home}}/cluster/etcd/backups"
 elasticsearch_data_dir: "{{k8s_addon_home}}/elasticsearch"
 registry_data_dir: "{{k8s_addon_home}}/registry"

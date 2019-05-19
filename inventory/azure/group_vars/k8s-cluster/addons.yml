@@ -13,6 +13,7 @@ monitoring_namespace: "monitoring"
 monitoring_storage_class: "{{ volume_storage_class_name }}"
 ############## kin 
 
+registry_storage_class: "{{ volume_storage_class_name }}"
 
 # Kubernetes dashboard
 # RBAC required. see docs/getting-started.md for access details.

@@ -2,10 +2,6 @@
 ########## kin
 bootstrap_os: centos
 cloud_provider: azure
-
-# disable swap
-disable_swap: true
-ansible_swaptotal_mb: 1
 ########## kin
 
 
