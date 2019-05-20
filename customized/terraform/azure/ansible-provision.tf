@@ -10,6 +10,7 @@ resource "local_file" "ansible_pem" {
 }
 
 resource "null_resource" "ansible_pem_permission" {
+  depends_on = ["local_file.ansible_pem"]
   provisioner "local-exec" {
     command = "chmod 600 ${path.module}/ansible.pem"
   }

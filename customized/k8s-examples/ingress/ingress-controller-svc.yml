@@ -2,15 +2,10 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ingress-nginx
-  namespace: {{ ingress_nginx_namespace }}
 spec:
-{% if cloud_provider is defined %}
-  type: LoadBalancer
-{% else %}
   type: NodePort
-{% endif %}
   selector:
-    app.kubernetes.io/name: ingress-nginx
+    app: ingress-nginx
   ports:
   - name: http
     port: 80
