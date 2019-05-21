@@ -17,15 +17,6 @@ spec:
           serviceName: kubernetes-dashboard
           servicePort: 443  
 {% endif %}        
-{% if monitoring_enabled %}
-  - host: monitoring.k8s.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kube-prometheus-grafana
-          servicePort: 80
-{% endif %}  
 {% if efk_enabled %}
   - host: logging.k8s.com
     http:
@@ -45,6 +36,7 @@ spec:
         path: /
 {% endif %}  
 
+{% if monitoring_enabled %}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -62,3 +54,4 @@ spec:
         backend:
           serviceName: kube-prometheus-grafana
           servicePort: 80
+{% endif %}  
