@@ -12,7 +12,7 @@ settings = YAML.load_file 'vagrantConf.yml'
 
 # create dynamic inventory file. ansible provisioner 's dynamic inventory got some bugs
 UI.info 'Create ansible dynamic inventory file...', bold: true
-inventory_file = 'inventory/sample/hosts'
+inventory_file = '../inventory/sample/hosts'
 File.open(inventory_file, 'w') do |f|
   settings.each do |_, machine_info|
     f.puts(machine_info['name'] + ' ' + 'ansible_host=' + machine_info['ip'] + ' ' + 'ip=' + machine_info['ip']) 
