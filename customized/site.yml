@@ -3,6 +3,7 @@
 - import_playbook: util-disable-firewalld.yml
 
 - import_playbook: util-redhat-subscription.yml
+  when: ansible_os_family == "RedHat"
 
 - import_playbook: ../cluster.yml
 

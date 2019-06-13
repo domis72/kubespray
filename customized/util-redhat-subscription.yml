@@ -26,3 +26,7 @@
         password: "{{redhat_subscription_pwd}}"
         autosubscribe: true
         force_register: yes
+    - name: Enable a RHSM repository
+      rhsm_repository:
+        name: rhel-7-server-extras-rpms
+        state: enabled
