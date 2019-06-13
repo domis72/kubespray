@@ -89,7 +89,7 @@ Vagrant.configure('2') do |config|
         node.vm.provision :ansible_local do |ansible|
           #ansible.install_mode = :pip # or default( by os package manager)
           ansible.install_mode = "pip_args_only"
-          #ansible.version = "2.7.8"
+          ansible.version = "2.7.8"
           ansible.pip_args = "-r /vagrant/requirements.txt"
           ansible.config_file = 'ansible.cfg'
           ansible.inventory_path = 'inventory/sample/hosts'
