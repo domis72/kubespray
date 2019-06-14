@@ -4,7 +4,7 @@
 
 resource "azurerm_public_ip" "master-lb-publicip" {
   name                = "${var.resource_name_prefix}-lb-publicip"
-  resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
   location            = "${var.location}"
 
   allocation_method = "Static"
@@ -18,20 +18,20 @@ resource "azurerm_public_ip" "master-lb-publicip" {
 
 resource "azurerm_lb" "master-lb" {
   name                = "${var.resource_name_prefix}-master-lb"
-  resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
   location            = "${var.location}"
 
   frontend_ip_configuration {
     name                 = "${var.resource_name_prefix}-master-frontend"
-    public_ip_address_id = "${azurerm_public_ip.k8s-master-publicip.id}"
+    public_ip_address_id = "${azurerm_public_ip.master-lb-publicip.id}"
   }
 }
 
 resource "azurerm_lb_backend_address_pool" "master-lb-bepool" {
   name                = "${var.resource_name_prefix}-master-backend"
-  resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
 
-  loadbalancer_id = "${azurerm_lb.k8s-master-lb.id}"
+  loadbalancer_id = "${azurerm_lb.master-lb.id}"
 }
 
 # -----------------------------------------------------------------
@@ -40,11 +40,11 @@ resource "azurerm_lb_backend_address_pool" "master-lb-bepool" {
 
 resource "azurerm_lb_rule" "master-lb-rule" {
   name                = "${var.resource_name_prefix}-api"
-  resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
 
-  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.k8s-master-lb-bepool.id}"
-  loadbalancer_id                = "${azurerm_lb.k8s-master-lb.id}"
-  probe_id                       = "${azurerm_lb_probe.k8s-api-lb-probe.id}"
+  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.master-lb-bepool.id}"
+  loadbalancer_id                = "${azurerm_lb.master-lb.id}"
+  probe_id                       = "${azurerm_lb_probe.api-lb-probe.id}"
   frontend_ip_configuration_name = "${var.resource_name_prefix}-master-frontend"
 
   protocol                = "Tcp"
@@ -57,9 +57,9 @@ resource "azurerm_lb_rule" "master-lb-rule" {
 // Load balancer TCP probe that checks if the nodes are available
 resource "azurerm_lb_probe" "api-lb-probe" {
   name                = "${var.resource_name_prefix}-api"
-  resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
 
-  loadbalancer_id     = "${azurerm_lb.k8s-master-lb.id}"
+  loadbalancer_id     = "${azurerm_lb.master-lb.id}"
   port                = "${var.api_loadbalancer_backend_port}"
   interval_in_seconds = 5
   number_of_probes    = 2
@@ -73,8 +73,8 @@ resource "azurerm_lb_probe" "api-lb-probe" {
 resource "azurerm_lb_nat_rule" "ssh-master-nat" {
   count = "${var.num_masters}"
 
-  resource_group_name            = "${azurerm_resource_group.k8sgroup.name}"
-  loadbalancer_id                = "${azurerm_lb.k8s-master-lb.id}"
+  resource_group_name            = "${azurerm_resource_group.cluster-group.name}"
+  loadbalancer_id                = "${azurerm_lb.master-lb.id}"
   name                           = "ssh-master-${format("%03d", count.index + 1)}"
   protocol                       = "Tcp"
   frontend_port                  = "222${count.index + 1}"

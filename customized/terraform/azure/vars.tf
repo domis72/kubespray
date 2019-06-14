@@ -7,6 +7,9 @@ variable "client_secret" {}
 
 variable "tenant_id" {}
 
+variable "resource_group_name" {
+  default = "k8s"
+}
 
 variable "resource_name_prefix" {
   default = "k8s"

@@ -19,11 +19,11 @@ resource "null_resource" "ansible_pem_permission" {
 
 resource "null_resource" "ansible_host_provision" {
   count = 1
-  depends_on = ["azurerm_virtual_machine.k8s-master-vm"]
+  depends_on = ["azurerm_virtual_machine.master-vm"]
 
   connection {
     type     = "ssh"
-    host = "${azurerm_public_ip.k8s-master-publicip.ip_address}"
+    host = "${azurerm_public_ip.master-lb-publicip.ip_address}"
     port = "2221"
     user = "${var.admin_username}"
     private_key = "${tls_private_key.ansible_key.private_key_pem}"
@@ -53,27 +53,27 @@ resource "null_resource" "ansible_host_provision" {
 }
 
 resource "local_file" "ansible_inventory" {
-  depends_on = ["azurerm_virtual_machine.k8s-master-vm", "azurerm_virtual_machine.k8s-node-vm", "null_resource.ansible_host_provision"]
+  depends_on = ["azurerm_virtual_machine.master-vm", "azurerm_virtual_machine.node-vm", "null_resource.ansible_host_provision"]
   filename = "../../../inventory/azure/hosts"
   content =  <<EOF
-${join("\n", formatlist("%s ansible_host=%s ip=%s", azurerm_virtual_machine.k8s-master-vm.*.name , azurerm_network_interface.k8s-master-nic.*.private_ip_address, azurerm_network_interface.k8s-master-nic.*.private_ip_address))}
-${join("\n", formatlist("%s ansible_host=%s ip=%s", azurerm_virtual_machine.k8s-node-vm.*.name, azurerm_network_interface.k8s-slave-nic.*.private_ip_address, azurerm_network_interface.k8s-slave-nic.*.private_ip_address ))}
+${join("\n", formatlist("%s ansible_host=%s ip=%s", azurerm_virtual_machine.master-vm.*.name , azurerm_network_interface.master-nic.*.private_ip_address, azurerm_network_interface.master-nic.*.private_ip_address))}
+${join("\n", formatlist("%s ansible_host=%s ip=%s", azurerm_virtual_machine.node-vm.*.name, azurerm_network_interface.slave-nic.*.private_ip_address, azurerm_network_interface.slave-nic.*.private_ip_address ))}
 
 [kube-master]
-${join("\n",azurerm_virtual_machine.k8s-master-vm.*.name )}
+${join("\n",azurerm_virtual_machine.master-vm.*.name )}
 
 [etcd]
-${join("\n",azurerm_virtual_machine.k8s-master-vm.*.name)}
+${join("\n",azurerm_virtual_machine.master-vm.*.name)}
 
 [kube-node]
-${join("\n",azurerm_virtual_machine.k8s-node-vm.*.name)}
+${join("\n",azurerm_virtual_machine.node-vm.*.name)}
   
 [k8s-cluster:children]
 kube-master
 kube-node
 
 [kube-ingress]
-${azurerm_virtual_machine.k8s-node-vm.0.name}
+${azurerm_virtual_machine.node-vm.0.name}
 EOF
 }
 
@@ -86,7 +86,7 @@ resource "null_resource" "k8s_build_cluster" {
   }
   connection {
       user = "${var.admin_username}"
-      host = "${azurerm_public_ip.k8s-master-publicip.ip_address}"
+      host = "${azurerm_public_ip.master-lb-publicip.ip_address}"
       port =  "2221"
       private_key = "${tls_private_key.ansible_key.private_key_pem}"
   }

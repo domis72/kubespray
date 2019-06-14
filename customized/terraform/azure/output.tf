@@ -12,7 +12,7 @@
 # }
 
 output "master-privateip" {
-  value = "${azurerm_network_interface.k8s-master-nic.*.private_ip_address}" 
+  value = "${azurerm_network_interface.master-nic.*.private_ip_address}" 
 }
 
 
@@ -30,10 +30,10 @@ output "master-privateip" {
 
 
 output "slave-privateip" {
-  value = "${azurerm_network_interface.k8s-slave-nic.*.private_ip_address}" 
+  value = "${azurerm_network_interface.slave-nic.*.private_ip_address}" 
 }
 
 
 output "master-lb-public-ip" {
-    value = "${azurerm_public_ip.k8s-master-publicip.ip_address}"
+    value = "${azurerm_public_ip.master-lb-publicip.ip_address}"
 }
