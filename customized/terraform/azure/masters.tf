@@ -1,26 +1,26 @@
 
-resource "azurerm_availability_set" "k8s-master-as" {
-  name                = "k8s-master-as"
+resource "azurerm_availability_set" "master-as" {
+  name                = "${var.resource_name_prefix}-master-as"
   location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
 
   managed                      = "true"
   platform_fault_domain_count  = 3
   platform_update_domain_count = 10
 }
 
-resource "azurerm_subnet" "k8s-master-subnet" {
+resource "azurerm_subnet" "master-subnet" {
   name                = "${var.resource_name_prefix}-master-subnet"
-  resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
 
-  virtual_network_name = "${azurerm_virtual_network.k8s-network.name}"
+  virtual_network_name = "${azurerm_virtual_network.vnet.name}"
   address_prefix       = "${var.master_subnet_cidr}"
 }
 
 
-resource "azurerm_network_security_group" "k8s-master-nsg" {
+resource "azurerm_network_security_group" "master-nsg" {
   name                = "${var.resource_name_prefix}-master-nsg"
-  resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
   location            = "${var.location}"
 
   security_rule {
@@ -52,61 +52,54 @@ resource "azurerm_network_security_group" "k8s-master-nsg" {
 
 
 
-resource "azurerm_network_interface" "k8s-master-nic" {
+resource "azurerm_network_interface" "master-nic" {
   count = "${var.num_masters}"
-	name = "k8s-master-nic-${count.index}"
+	name = "${var.resource_name_prefix}-master-nic-${count.index}"
 	location = "${var.location}"
-	resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
-	network_security_group_id = "${azurerm_network_security_group.k8s-master-nsg.id}"
+	resource_group_name = "${azurerm_resource_group.cluster-group.name}"
+	network_security_group_id = "${azurerm_network_security_group.master-nsg.id}"
 
   ip_configuration {
     name                                    = "${var.resource_name_prefix}-master-nic-ipconfig-${count.index}"
-    subnet_id                               = "${azurerm_subnet.k8s-master-subnet.id}"
+    subnet_id                               = "${azurerm_subnet.master-subnet.id}"
     private_ip_address_allocation           = "dynamic"
   }
-	tags {
-		environment = "k8s-test" 
-	}
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "nic-address-pool-assoc" {
   count = "${var.num_masters}" 
-  network_interface_id    = "${element(azurerm_network_interface.k8s-master-nic.*.id, count.index)}"
+  network_interface_id    = "${element(azurerm_network_interface.master-nic.*.id, count.index)}"
   ip_configuration_name   = "${var.resource_name_prefix}-master-nic-ipconfig-${count.index}"
-  backend_address_pool_id = "${azurerm_lb_backend_address_pool.k8s-master-lb-bepool.id}"
+  backend_address_pool_id = "${azurerm_lb_backend_address_pool.master-lb-bepool.id}"
 }
 
 resource "azurerm_network_interface_nat_rule_association" "nic-nat-rule-assoc" {
   count = "${var.num_masters}" 
-  network_interface_id    = "${element(azurerm_network_interface.k8s-master-nic.*.id, count.index)}"
+  network_interface_id    = "${element(azurerm_network_interface.master-nic.*.id, count.index)}"
   ip_configuration_name = "${var.resource_name_prefix}-master-nic-ipconfig-${count.index}"
   nat_rule_id           = "${element(azurerm_lb_nat_rule.ssh-master-nat.*.id, count.index)}"
 }
 
 
-resource "azurerm_storage_account" "k8s-storage-account" {
+resource "azurerm_storage_account" "storage-account" {
 	name = "diag${random_id.random-id.hex}"
 	location = "${var.location}"
-	resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+	resource_group_name = "${azurerm_resource_group.cluster-group.name}"
 	account_replication_type = "LRS"
 	account_tier = "Standard"
-
-	tags {
-		environment = "k8s-test" 
-	}
 }
 
 
-resource "azurerm_virtual_machine" "k8s-master-vm" {
+resource "azurerm_virtual_machine" "master-vm" {
   count = "${var.num_masters}"
-	name = "k8s-m${count.index}"
+	name = "${var.resource_name_prefix}-m${count.index}"
 	location = "${var.location}"
-  availability_set_id = "${azurerm_availability_set.k8s-master-as.id}"
+  availability_set_id = "${azurerm_availability_set.master-as.id}"
 
   network_interface_ids = [
-    "${element(azurerm_network_interface.k8s-master-nic.*.id, count.index)}",
+    "${element(azurerm_network_interface.master-nic.*.id, count.index)}",
   ]
-	resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+	resource_group_name = "${azurerm_resource_group.cluster-group.name}"
 	vm_size = "${var.master_vm_size}"
 
 	storage_os_disk {
@@ -126,7 +119,7 @@ resource "azurerm_virtual_machine" "k8s-master-vm" {
 
 
 	os_profile {
-		computer_name = "k8s-m${count.index}"
+		computer_name = "${var.resource_name_prefix}-m${count.index}"
 		admin_username  = "${var.admin_username}"
 	}
 
@@ -140,11 +133,7 @@ resource "azurerm_virtual_machine" "k8s-master-vm" {
 
 	boot_diagnostics {
 		enabled = "true"
-		storage_uri = "${azurerm_storage_account.k8s-storage-account.primary_blob_endpoint}"
-	}
-
-	tags {
-		environment = "k8s-test"
+		storage_uri = "${azurerm_storage_account.storage-account.primary_blob_endpoint}"
 	}
 }
 

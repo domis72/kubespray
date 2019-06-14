@@ -7,39 +7,31 @@ provider "azurerm" {
 
 
 
-resource "azurerm_resource_group" "k8sgroup" {
-	name = "k8s"
+resource "azurerm_resource_group" "cluster-group" {
+	name = "${var.resource_group_name}"
 	location = "${var.location}"
-	
-	tags {
-		environment = "k8s-test" 
-	}
 }
 
 
 resource "random_id" "random-id" {
 	keepers = {
-		resource_group = "${azurerm_resource_group.k8sgroup.name}"	
+		resource_group = "${azurerm_resource_group.cluster-group.name}"	
 	}
 	byte_length = 8
 }
 
 
-resource "azurerm_route_table" "k8s-routetable" {
+resource "azurerm_route_table" "routetable" {
   name                = "${var.resource_name_prefix}-routetable"
-  resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
+  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
   location            = "${var.location}"
 }
 
 
-resource "azurerm_virtual_network" "k8s-network" {
-	name = "k8s-net"
+resource "azurerm_virtual_network" "vnet" {
+	name = "${var.resource_name_prefix}-net"
 	address_space = ["${var.vnet_cidr}"]
 	location = "${var.location}"
-	resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
-
-	tags {
-		environment = "k8s-test" 
-	}
+	resource_group_name = "${azurerm_resource_group.cluster-group.name}"
 }
 

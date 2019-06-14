@@ -2,8 +2,8 @@
 # CREATE PUBLIC IP FOR MASTER SSH/API ACCESS
 # -----------------------------------------------------------------
 
-resource "azurerm_public_ip" "k8s-master-publicip" {
-  name                = "${var.resource_name_prefix}-master-publicip"
+resource "azurerm_public_ip" "master-lb-publicip" {
+  name                = "${var.resource_name_prefix}-lb-publicip"
   resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
   location            = "${var.location}"
 
@@ -16,7 +16,7 @@ resource "azurerm_public_ip" "k8s-master-publicip" {
 # CREATE LOADBALANCER FOR MASTERS
 # -----------------------------------------------------------------
 
-resource "azurerm_lb" "k8s-master-lb" {
+resource "azurerm_lb" "master-lb" {
   name                = "${var.resource_name_prefix}-master-lb"
   resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
   location            = "${var.location}"
@@ -27,7 +27,7 @@ resource "azurerm_lb" "k8s-master-lb" {
   }
 }
 
-resource "azurerm_lb_backend_address_pool" "k8s-master-lb-bepool" {
+resource "azurerm_lb_backend_address_pool" "master-lb-bepool" {
   name                = "${var.resource_name_prefix}-master-backend"
   resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
 
@@ -38,7 +38,7 @@ resource "azurerm_lb_backend_address_pool" "k8s-master-lb-bepool" {
 # CREATE LB RULES for API ACCESS ON MASTER NODES
 # -----------------------------------------------------------------
 
-resource "azurerm_lb_rule" "k8s-api-lb-rule" {
+resource "azurerm_lb_rule" "master-lb-rule" {
   name                = "${var.resource_name_prefix}-api"
   resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
 
@@ -55,7 +55,7 @@ resource "azurerm_lb_rule" "k8s-api-lb-rule" {
 }
 
 // Load balancer TCP probe that checks if the nodes are available
-resource "azurerm_lb_probe" "k8s-api-lb-probe" {
+resource "azurerm_lb_probe" "api-lb-probe" {
   name                = "${var.resource_name_prefix}-api"
   resource_group_name = "${azurerm_resource_group.k8sgroup.name}"
 
