@@ -21,4 +21,5 @@ m1:
    cpus: 2
    mem: 3000
    type: kube-master,etcd
+   ansible_host: true
 
