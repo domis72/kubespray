@@ -28,3 +28,6 @@ grafana:
   auth:
     anonymous:
       enabled: "false"
+  ingress:
+    enabled: true  
+    hosts: "monitoring.{{ingress_base_url}}"
