@@ -1,0 +1,38 @@
+alertmanager:
+  storageSpec:
+    volumeClaimTemplate:
+      metadata:
+        name: alertmanage-kube-prometheus-db
+      spec:
+        storageClassName: "{{monitoring_storage_class}}"
+        resources:
+          requests:
+            storage: "{{monitoring_storage_volume_size}}"
+        accessModes:
+        - ReadWriteOnce
+
+prometheus:
+  storageSpec:
+    volumeClaimTemplate:
+      metadata:
+        name: prometheus-kube-prometheus-db
+      spec:
+        storageClassName: "{{monitoring_storage_class}}"
+        resources:
+          requests:
+            storage: "{{monitoring_storage_volume_size}}"
+        accessModes:
+        - ReadWriteOnce
+
+
+grafana:
+  auth:
+    anonymous:
+      enabled: "false"
+  ingress:
+    enabled: true  
+    annotations: 
+      kubernetes.io/ingress.class: "nginx"
+      # kubernetes.io/tls-acme: "true
+    hosts: "monitoring.k8s.com"
+    annotations: {}
