@@ -1,4 +1,6 @@
 ---
+
+monitoring_enabled: true
 # Kubernetes dashboard
 # RBAC required. see docs/getting-started.md for access details.
 dashboard_enabled: true
@@ -97,5 +99,5 @@ ingress_nginx_enabled: true
 #   53: "kube-system/coredns:53"
 
 # Cert manager deployment
-cert_manager_enabled: false
+cert_manager_enabled: true
 # cert_manager_namespace: "cert-manager"
