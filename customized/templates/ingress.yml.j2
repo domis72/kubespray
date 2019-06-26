@@ -17,15 +17,6 @@ spec:
           serviceName: kubernetes-dashboard
           servicePort: 443  
 {% endif %}        
-{% if efk_enabled %}
-  - host: logging.k8s.com
-    http:
-      paths:
-      - backend:
-          serviceName: kibana-logging
-          servicePort: 5601
-        path: /
-{% endif %}  
 {% if registry_enabled %}
   - host: registry.k8s.com
     http:
