@@ -1,4 +1,9 @@
 ---
+
+download_run_once: true 
+download_localhost: true
+local_release_dir: /vagrant/releases
+
 # Kubernetes configuration dirs and system namespace.
 # Those are where all the additional config stuff goes
 # the kubernetes normally puts in /srv/kubernetes.
@@ -25,9 +30,7 @@ kube_version: v1.14.1
 # kubernetes image repo define
 kube_image_repo: "gcr.io/google-containers"
 
-# Where the binaries will be downloaded.
-# Note: ensure that you've enough disk space (about 1G)
-local_release_dir: "/tmp/releases"
+
 # Random shifts for retrying failed ops like pushing/downloading
 retry_stagger: 5
 
@@ -175,9 +178,9 @@ dynamic_kubelet_configuration_dir: "{{ kubelet_config_dir | default(default_kube
 podsecuritypolicy_enabled: false
 
 # Make a copy of kubeconfig on the host that runs Ansible in {{ inventory_dir }}/artifacts
-# kubeconfig_localhost: false
+kubeconfig_localhost: true
 # Download kubectl onto the host that runs Ansible in {{ bin_dir }}
-# kubectl_localhost: false
+kubectl_localhost: true
 
 
 #  Enable creation of QoS cgroup hierarchy, if true top level QoS and pod cgroups are created. (default true)
