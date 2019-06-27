@@ -18,5 +18,5 @@
     - name: Upudate resolv.conf of all nodes to use local DNS
       lineinfile:
         path: /etc/resolv.conf
-        regexp: "^namveserver {{groups['kube-node'][0]}}"
-        line: "namveserver {{groups['kube-node'][0]}}"
+        regexp: "^namveserver {{groups['util-node'][0]}}"
+        line: "namveserver {{groups['util-node'][0]}}"
