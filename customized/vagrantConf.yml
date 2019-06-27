@@ -13,13 +13,16 @@ s2:
    cpus: 2
    mem: 3000
    type: kube-node
-
-
+u1:
+   name: util-01
+   ip: 10.0.35.41
+   cpus: 2
+   mem: 2000
+   type: util-node
+   ansible_host: true
 m1:
    name: k8s-01
    ip: 10.0.35.21
    cpus: 2
    mem: 3000
    type: kube-master,etcd
-   ansible_host: true
-

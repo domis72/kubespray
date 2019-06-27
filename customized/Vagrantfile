@@ -18,7 +18,7 @@ File.open(inventory_file, 'w') do |f|
     f.puts(machine_info['name'] + ' ' + 'ansible_host=' + machine_info['ip'] + ' ' + 'ip=' + machine_info['ip']) 
   end
 
-  %w(kube-master etcd kube-node).each do |section|
+  %w(kube-master etcd kube-node util-node).each do |section|
     f.puts("[#{section}]")
     settings.each do |_, machine_info|
       types = machine_info['type'].split(',') 
@@ -103,7 +103,7 @@ Vagrant.configure('2') do |config|
             https_proxy: "#{config.proxy.https}",
             monitoring_enabled: "True",
             download_run_once: "True",
-            download_localhost: "True",
+            download_localhost: "True"
           }
         end
       end

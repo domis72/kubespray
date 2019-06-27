@@ -5,6 +5,8 @@
 - import_playbook: util-redhat-subscription.yml
   when: ansible_os_family == "RedHat"
 
+- import_playbook: util-dns.yml
+
 - import_playbook: ../cluster.yml
 
 - hosts: kube-master[0]
