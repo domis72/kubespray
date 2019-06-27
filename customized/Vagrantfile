@@ -49,7 +49,6 @@ Vagrant.configure('2') do |config|
   config.hostmanager.include_offline = true
   config.cache.scope = :box # :machine
   config.vbguest.auto_update = false
-  config.landrush.enabled = true
 
   if Vagrant.has_plugin?('vagrant-proxyconf') && 
    config.proxy.http = ENV['HTTP_PROXY'] || ENV['http_proxy'] ||  ""
