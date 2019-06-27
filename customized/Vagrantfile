@@ -8,12 +8,14 @@ require 'vagrant/ui'
 UI = Vagrant::UI::Colored.new
 
 settings = YAML.load_file 'vagrantConf.yml'
+https_proxy_str = ENV['HTTPS_PROXY'] || ENV['https_proxy'] ||  ""
 
 
 # create dynamic inventory file. ansible provisioner 's dynamic inventory got some bugs
 UI.info 'Create ansible dynamic inventory file...', bold: true
 inventory_file = '../inventory/sample/hosts'
 File.open(inventory_file, 'w') do |f|
+  f.puts('localhost' + ' ' + 'ansible_connection=local ' + 'download_run_once: true ' + 'download_localhost: true' + 'local_release_dir: /vagrant/releases')
   settings.each do |_, machine_info|
     f.puts(machine_info['name'] + ' ' + 'ansible_host=' + machine_info['ip'] + ' ' + 'ip=' + machine_info['ip']) 
   end
