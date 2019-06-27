@@ -33,9 +33,9 @@ File.open(inventory_file, 'w') do |f|
   f.write("[k8s-cluster:children]\nkube-master\nkube-node")
 
   if https_proxy
-    f.write("[all:vars]")
-    f.write("http_proxy=#{http_proxy}")
-    f.write("https_proxy=#{https_proxy}")
+    f.puts("[all:vars]")
+    f.puts("http_proxy=#{http_proxy}")
+    f.puts("https_proxy=#{https_proxy}")
   end
     
 end
