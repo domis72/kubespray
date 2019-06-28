@@ -37,6 +37,7 @@ File.open(inventory_file, 'w') do |f|
     f.puts("[all:vars]")
     f.puts("http_proxy=#{http_proxy}")
     f.puts("https_proxy=#{https_proxy}")
+    f.puts("install_dnsmasq=true")
   end
     
 end

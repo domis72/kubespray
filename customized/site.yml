@@ -6,7 +6,7 @@
   when: ansible_os_family == "RedHat"
 
 - import_playbook: util-dnsmasq.yml
-  #when: install_dnsmasq is defined and install_dnsmasq
+  when: install_dnsmasq is defined and install_dnsmasq
 
 - import_playbook: ../cluster.yml
 
