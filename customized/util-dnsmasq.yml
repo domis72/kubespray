@@ -3,20 +3,25 @@
   gather_facts: True
   become: True
   tasks:
-    - name: install dnsmasq
+    - name: dnsmaq | install dnsmasq
       yum:
         name: "{{item}}" # not required. A package name or package specifier with version, like C(name-1.0).,If a previous version is specified, the task also needs to turn C(allow_downgrade) on. See the C(allow_downgrade) documentation for caveats with downgrading packages.,When using state=latest, this can be C('*') which means run C(yum -y update).,You can also pass a url or a local path to a rpm file (using state=present). To operate on several packages this can accept a comma separated list of packages or (as of 2.0) a list of packages.
         state: present 
       with_items:
         - dnsmasq
         - rsync
+    - name: Start
+    - name: Docker | reload docker
+      service:
+        name: dnsmasq
+        state: restarted
 
 - hosts: all
   gather_facts: True
   become: True
   tasks:
-    - name: Upudate resolv.conf of all nodes to use local DNS
+    - name: dnsmasq | Upudate resolv.conf of all nodes to use local DNS
       lineinfile:
         path: /etc/resolv.conf
-        regexp: "^namveserver {{groups['util-node'][0]}}"
-        line: "namveserver {{groups['util-node'][0]}}"
+        regexp: "^nameserver {{groups['util-node'][0]}}"
+        line: "nameserver {{groups['util-node'][0]}}"
