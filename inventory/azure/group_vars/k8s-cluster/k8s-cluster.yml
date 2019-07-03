@@ -28,6 +28,7 @@ download_run_once: True # if not download localhost is not defined, master[0] do
 #download_localhost: True
 
 artifacts_dir: "~/.kube"
+kubeconfig_localhost: true
 ##################################
 
 # Kubernetes configuration dirs and system namespace.
