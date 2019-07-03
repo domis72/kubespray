@@ -22,5 +22,6 @@
     - name: dnsmasq | Upudate resolv.conf of all nodes to use local DNS
       lineinfile:
         path: /etc/resolv.conf
+        insertbefore: BOF
         regexp: "^nameserver {{groups['util-node'][0]}}"
         line: "nameserver {{groups['util-node'][0]}}"
