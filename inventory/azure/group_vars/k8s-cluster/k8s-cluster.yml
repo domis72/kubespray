@@ -1,7 +1,7 @@
 ---
 
 ############ kin ############
-kubeadm_enabled: false
+kubeadm_enabled: true
 offline_install: true
 #docker_rh_repo_base_url: <private repo>
 # disable swap
@@ -24,8 +24,10 @@ etcd_backup_prefix: "{{k8s_data_home}}/cluster/etcd/backups"
 elasticsearch_data_dir: "{{k8s_addon_home}}/elasticsearch"
 registry_data_dir: "{{k8s_addon_home}}/registry"
 local_release_dir: "{{k8s_addon_home}}/releases"
-download_run_once: False
+download_run_once: True # if not download localhost is not defined, master[0] downloads image for all nodes
 #download_localhost: True
+
+artifacts_dir: "~/.kube"
 ##################################
 
 # Kubernetes configuration dirs and system namespace.
