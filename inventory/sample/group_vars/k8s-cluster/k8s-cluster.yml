@@ -220,14 +220,35 @@ persistent_volumes_enabled: false
 ############################################# kin ######################################
 ############################################# kin ######################################
 
-download_run_once: true 
-#download_localhost: true
-local_release_dir: /vagrant/releases
+kubeadm_enabled: true
+offline_install: true
+#docker_rh_repo_base_url: <private repo>
+# disable swap
+disable_swap: true
+ansible_swaptotal_mb: 1
+
+k8s_data_home: "/k8s"
+k8s_addon_home: "{{k8s_data_home}}/addons"
+
+# etcd backup
 backup_enabled: true
+etcd_master_node: "{{ groups['kube-master'][0] }}"
+etcd_backup_schedule: "* 0 * * *" # every 12:00 AM
+#etcd_storage_class: "azure-k8s-sc"
+#when use host path instead of persistemvolume for backup, remove etcd_storage class and add etcd_backup path
+etcd_disk_size: 20Gi
 
-# Make a copy of kubeconfig on the host that runs Ansible in {{ inventory_dir }}/artifacts
-kubeconfig_localhost: true
-# Download kubectl onto the host that runs Ansible in {{ bin_dir }}
+# if etcd_storage_class is none, then hostpath is used
+etcd_backup_prefix: "{{k8s_data_home}}/cluster/etcd/backups"
+elasticsearch_data_dir: "{{k8s_addon_home}}/elasticsearch"
+registry_data_dir: "{{k8s_addon_home}}/registry"
+local_release_dir: "{{k8s_data_home}}/releases"
+#download_localhost: True
+
+artifacts_dir: "~/.kube"
 kubectl_localhost: true
+kubeconfig_localhost: true
 
-artifacts_dir: "/home/vagrant/.kube"
+download_run_once: true  # if not download localhost is not defined, master[0] downloads image for all nodes
+#download_localhost: true
+
