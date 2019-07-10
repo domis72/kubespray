@@ -1,4 +1,5 @@
 ---
+metallb_enabled: true
 
 monitoring_enabled: true
 # Kubernetes dashboard
