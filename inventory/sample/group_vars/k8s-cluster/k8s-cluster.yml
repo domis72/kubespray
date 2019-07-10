@@ -1,9 +1,6 @@
 ---
 
-download_run_once: true 
-#download_localhost: true
-local_release_dir: /vagrant/releases
-backup_enabled: true
+
 
 # Kubernetes configuration dirs and system namespace.
 # Those are where all the additional config stuff goes
@@ -178,10 +175,7 @@ dynamic_kubelet_configuration_dir: "{{ kubelet_config_dir | default(default_kube
 # pod security policy (RBAC must be enabled either by having 'RBAC' in authorization_modes or kubeadm enabled)
 podsecuritypolicy_enabled: false
 
-# Make a copy of kubeconfig on the host that runs Ansible in {{ inventory_dir }}/artifacts
-kubeconfig_localhost: true
-# Download kubectl onto the host that runs Ansible in {{ bin_dir }}
-kubectl_localhost: true
+
 
 
 #  Enable creation of QoS cgroup hierarchy, if true top level QoS and pod cgroups are created. (default true)
@@ -219,3 +213,21 @@ persistent_volumes_enabled: false
 # nvidia_driver_install_ubuntu_container: gcr.io/google-containers/ubuntu-nvidia-driver-installer@sha256:7df76a0f0a17294e86f691c81de6bbb7c04a1b4b3d4ea4e7e2cccdc42e1f6d63
 ## NVIDIA GPU device plugin image.
 # nvidia_gpu_device_plugin_container: "k8s.gcr.io/nvidia-gpu-device-plugin@sha256:0842734032018be107fa2490c98156992911e3e1f2a21e059ff0105b07dd8e9e"
+
+
+############################################# kin ######################################
+############################################# kin ######################################
+############################################# kin ######################################
+############################################# kin ######################################
+
+download_run_once: true 
+#download_localhost: true
+local_release_dir: /vagrant/releases
+backup_enabled: true
+
+# Make a copy of kubeconfig on the host that runs Ansible in {{ inventory_dir }}/artifacts
+kubeconfig_localhost: true
+# Download kubectl onto the host that runs Ansible in {{ bin_dir }}
+kubectl_localhost: true
+
+artifacts_dir: "/home/vagrant/.kube"
