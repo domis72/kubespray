@@ -23,5 +23,5 @@
       lineinfile:
         path: /etc/resolv.conf
 #        insertbefore: BOF
-        regexp: "^nameserver {{ hostvars['util-node'].ansible_host }}"
-        line: "nameserver {{ hostvars['util-node'].ansible_host }}"
+        regexp: "^nameserver {{ hostvars[groups['util-node'][0]].ansible_host }}"
+        line: "nameserver {{ hostvars[groups['util-node'][0]].ansible_host }}"
