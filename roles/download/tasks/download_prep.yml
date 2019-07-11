@@ -25,7 +25,7 @@
     recurse: yes
   delegate_to: localhost
   delegate_facts: false
-  become: false
+  become: true
   run_once: true
   when:
     - download_run_once
