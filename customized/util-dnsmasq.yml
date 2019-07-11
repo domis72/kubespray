@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: util-node[0]
   gather_facts: True
   become: True
   tasks:
@@ -22,6 +22,6 @@
     - name: dnsmasq | Upudate resolv.conf of all nodes to use local DNS
       lineinfile:
         path: /etc/resolv.conf
-        insertbefore: BOF
-        regexp: "^nameserver {{groups['util-node'][0]}}"
-        line: "nameserver {{groups['util-node'][0]}}"
+#        insertbefore: BOF
+        regexp: "^nameserver {{ hostvars['util-node'].ansible_host }}"
+        line: "nameserver {{ hostvars['util-node'].ansible_host }}"
