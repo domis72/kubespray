@@ -22,6 +22,6 @@
     - name: dnsmasq | Upudate resolv.conf of all nodes to use local DNS
       lineinfile:
         path: /etc/resolv.conf
-#        insertbefore: BOF
+        insertbefore: BOF
         regexp: "^nameserver {{ hostvars[groups['util-node'][0]].ansible_host }}"
         line: "nameserver {{ hostvars[groups['util-node'][0]].ansible_host }}"
