@@ -76,7 +76,7 @@
 - name: Write admin kubeconfig on ansible host
   copy:
     content: "{{ admin_kubeconfig.stdout }}"
-    dest: "{{ artifacts_dir }}/admin.conf"
+    dest: "{{ artifacts_dir }}/config"
     mode: 0640
   delegate_to: localhost
   become: no

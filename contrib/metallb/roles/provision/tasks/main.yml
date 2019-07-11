@@ -1,7 +1,7 @@
 ---
 - name: "Kubernetes Apps | Lay Down MetalLB"
   become: true
-  template: { src: "{{ item }}.j2", dest: "{{ kube_config_dir }}/{{ item }}" }
+  template: { src: "{{ item }}.j2", dest: "{{ kube_config_dir }}/addons/{{ item }}" }
   with_items: ["metallb.yml", "metallb-config.yml"]
   register: "rendering"
   when:
@@ -10,7 +10,7 @@
   kube:
     name: "MetalLB"
     kubectl: "{{ bin_dir }}/kubectl"
-    filename: "{{ kube_config_dir }}/{{ item.item }}"
+    filename: "{{ kube_config_dir }}/addons/{{ item.item }}"
     state: "{{ item.changed | ternary('latest','present') }}"
   become: true
   with_items: "{{ rendering.results }}"
