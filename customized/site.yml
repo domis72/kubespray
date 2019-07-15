@@ -39,4 +39,4 @@
   gather_facts:  False
   roles:
   - { role: kubernetes-apps/backup, when: backup_enabled, tags: [apps, backup] }
-  - { role: ../contrib/metallb/roles/provision, when: metallb_enabled, tags: [apps, provision] }
+  - { role: ../contrib/metallb/roles/provision, when: metallb_enabled is defined and metallb_enabled, tags: [apps, provision] }
