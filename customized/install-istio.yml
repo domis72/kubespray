@@ -1,6 +1,6 @@
 ---
 - hosts: kube-master[0]
-  gather_facts:  False
+  gather_facts:  True
   tasks:
     - name: Update istio helm repo 
       shell: "/usr/local/bin/helm repo add istio.io https://storage.googleapis.com/istio-release/releases/{{ istio_version }}/charts/"
