@@ -4,6 +4,10 @@
   tasks:
     - name: Update istio helm repo 
       shell: "helm repo add istio.io https://storage.googleapis.com/istio-release/releases/{{ istio_version }}/charts/"
+      tags:
+      - istio
+      - apps
+
     - name: Install istio
       shell: "/usr/local/bin/helm install {{ item.chart_name }} --name {{ item.rel_name }} --namespace {{ istio_namespace }} --version {{ istio_version }}"
       with_items:
