@@ -3,7 +3,7 @@
   gather_facts:  False
   tasks:
     - name: Install istio
-      shell: "/usr/local/bin/helm install /tmp/{{ item.chart_name }} --name {{ item.rel_name }} --namespace {{ istio_namespace }} --version {{ istio_version }}"
+      shell: "/usr/local/bin/helm install {{ item.chart_name }} --name {{ item.rel_name }} --namespace {{ istio_namespace }} --version {{ istio_version }}"
       with_items:
       - { rel_name: istio-init, chart_name: istio.io/istio-init }
       - { rel_name: istio, chart_name: istio.io/istio }
