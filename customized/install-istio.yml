@@ -2,14 +2,36 @@
 - hosts: kube-master[0]
   gather_facts:  True
   tasks:
-    - name: Update istio helm repo 
-      shell: "/usr/local/bin/helm repo add istio.io https://storage.googleapis.com/istio-release/releases/{{ istio_version }}/charts/"
-      tags:
-      - istio
-      - apps
 
+  # - name: Build persistent storage spec
+  #   template:
+  #     src: new_values.yml.j2
+  #     dest: /tmp/new_values.yml
+  #   when: monitoring_storage_class | length >  0
+  # - set_fact:
+  #   new_opts: "{% if monitoring_storage_class != '' %} -f /tmp/new_values.yml {% else %} {% endif %}" 
+
+    - name: Copy istio charts to master[0]
+      copy:
+        src: "./files/{{item}}-{{istio_version}}.tgz" 
+        dest: /tmp/
+      with_items:
+      - istio-init 
+      - istio      
+
+    # - name: Update istio helm repo 
+    #   shell: "/usr/local/bin/helm repo add istio.io https://storage.googleapis.com/istio-release/releases/{{ istio_version }}/charts/"
+
+
+    - name: Remove istio charts
+      shell: "/usr/local/bin/helm del --purge {{ item }}"
+      ignore_errors: True
+      with_items:
+      - istio-init
+      - istio
+  
     - name: Install istio
-      shell: "/usr/local/bin/helm install {{ item.chart_name }} --name {{ item.rel_name }} --namespace {{ istio_namespace }} --version {{ istio_version }}"
+      shell: "/usr/local/bin/helm install /tmp/{{ item.chart_name }} --name {{ item.rel_name }} --namespace {{ istio_namespace }} --version {{ istio_version }}"
       with_items:
       - { rel_name: istio-init, chart_name: istio.io/istio-init }
       - { rel_name: istio, chart_name: istio.io/istio }
@@ -17,6 +39,3 @@
       retries: 10
       delay: 60
       until: tiller_ready.rc == 0
-      tags:
-        - istio
-        - apps
