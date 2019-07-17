@@ -1,14 +1,16 @@
 ---
-
-- name: Install istio
-  shell: "/usr/local/bin/helm install {{ item.options }} /tmp/{{ item.chart_name }} --name {{ item.rel_name }} --namespace {{ istio_namespace }} --version {{ istio_version }}"
-  with_items:
-  - { rel_name: istio-init, chart_name: istio.io/istio-init }
-  - { rel_name: istio, chart_name: istio.io/istio }
-  register: tiller_ready
-  retries: 10
-  delay: 60
-  until: tiller_ready.rc == 0
-  tags:
-    - istio
-    - apps
+- hosts: kube-master[0]
+  gather_facts:  False
+  tasks:
+    - name: Install istio
+      shell: "/usr/local/bin/helm install {{ item.options }} /tmp/{{ item.chart_name }} --name {{ item.rel_name }} --namespace {{ istio_namespace }} --version {{ istio_version }}"
+      with_items:
+      - { rel_name: istio-init, chart_name: istio.io/istio-init }
+      - { rel_name: istio, chart_name: istio.io/istio }
+      register: tiller_ready
+      retries: 10
+      delay: 60
+      until: tiller_ready.rc == 0
+      tags:
+        - istio
+        - apps
