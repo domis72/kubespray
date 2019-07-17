@@ -245,6 +245,7 @@ local_release_dir: "{{k8s_data_home}}/releases"
 #download_localhost: True
 
 artifacts_dir: "~/.kube"
+helm_home_dir: ~/.helm
 kubeconfig_localhost: true
 
 download_run_once: true  # if not download localhost is not defined, master[0] downloads image for all nodes
