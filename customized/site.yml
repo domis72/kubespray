@@ -43,3 +43,6 @@
 
 - import_playbook: install-istio.yml
   when: istio_enabled is defined and istio_enabled
+  tags:
+  - istio
+  - apps
