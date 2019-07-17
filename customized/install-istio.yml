@@ -3,7 +3,7 @@
   gather_facts:  False
   tasks:
     - name: Update istio helm repo 
-      shell: "helm repo add istio.io https://storage.googleapis.com/istio-release/releases/{{ istio_version }}/charts/"
+      shell: "/usr/local/bin/helm repo add istio.io https://storage.googleapis.com/istio-release/releases/{{ istio_version }}/charts/"
       tags:
       - istio
       - apps
