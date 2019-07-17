@@ -31,10 +31,10 @@
       - istio
   
     - name: Install istio
-      shell: "/usr/local/bin/helm install /tmp/{{ item.chart_name }} --name {{ item.rel_name }} --namespace {{ istio_namespace }} --version {{ istio_version }}"
+      shell: "/usr/local/bin/helm install /tmp/{{ item.chart_name }}-{{istio_version}}.tgz --name {{ item.rel_name }} --namespace {{ istio_namespace }} --version {{ istio_version }}"
       with_items:
-      - { rel_name: istio-init, chart_name: istio.io/istio-init }
-      - { rel_name: istio, chart_name: istio.io/istio }
+      - { rel_name: istio-init, chart_name: istio-init }
+      - { rel_name: istio, chart_name: istio }
       register: tiller_ready
       retries: 10
       delay: 60
