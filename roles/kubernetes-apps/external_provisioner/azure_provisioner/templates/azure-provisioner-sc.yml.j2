@@ -2,6 +2,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: {{ volume_storage_class_name }}
+  storageclass.kubernetes.io/is-default-class: true
 provisioner: {{ volume_provisioner_name }}
 reclaimPolicy: Retain
 {% if cloud_provider is defined and cloud_provider == "azure" %}

@@ -35,8 +35,10 @@
       with_items:
       - { rel_name: istio-init, chart_name: istio-init }
       - { rel_name: istio, chart_name: istio, opts: --set tracing.enabled=true --set global.mtls.enabled=true --set grafana.enabled=true --set kiali.enabled=true --set servicegraph.enabled=true }
-
       register: tiller_ready
       retries: 10
       delay: 60
       until: tiller_ready.rc == 0
+
+    - name: Label namespace, default for automatic sidecar injection 
+      shell: "kubectl label namespace default istio-injection=enabled"
