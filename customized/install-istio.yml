@@ -42,3 +42,4 @@
 
     - name: Label namespace, default for automatic sidecar injection 
       shell: "/usr/local/bin/kubectl label namespace default istio-injection=enabled"
+      ignore_errors: True
