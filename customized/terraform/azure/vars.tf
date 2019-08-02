@@ -26,6 +26,10 @@ variable "node_subnet_cidr" {
   default = "10.10.2.0/24"
 }
 
+variable "domain_name_label" {
+  default = "k8s-test"
+}
+
 variable "api_loadbalancer_frontend_port" {
   default = "6443"
 }

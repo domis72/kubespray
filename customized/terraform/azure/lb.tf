@@ -8,7 +8,7 @@ resource "azurerm_public_ip" "master-lb-publicip" {
   location            = "${var.location}"
 
   allocation_method = "Static"
-  #domain_name_label            = "${var.domain_name_label}"
+  domain_name_label  = "${var.domain_name_label}"
 }
 
 
