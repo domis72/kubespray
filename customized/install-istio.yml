@@ -41,4 +41,4 @@
       until: tiller_ready.rc == 0
 
     - name: Label namespace, default for automatic sidecar injection 
-      shell: "kubectl label namespace default istio-injection=enabled"
+      shell: "/usr/local/bin/kubectl label namespace default istio-injection=enabled"
