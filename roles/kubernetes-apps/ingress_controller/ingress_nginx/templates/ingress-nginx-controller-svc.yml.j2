@@ -9,6 +9,7 @@ metadata:
 spec:
 {% if cloud_provider is defined %}
   type: LoadBalancer
+  loadBalancerIP: {{ lb_public_ip }}
 {% else %}
   type: NodePort
 {% endif %}
