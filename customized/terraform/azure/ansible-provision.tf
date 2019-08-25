@@ -100,10 +100,20 @@ resource "null_resource" "k8s_build_cluster" {
   provisioner "remote-exec" {
     inline = [ "ANSIBLE_CONFIG=kubespray/inventory/azure/ansible.cfg ansible-playbook --vault-password-file=kubespray/password kubespray/customized/site.yml --become --extra-vars 'azure_subscription_id=${var.subscription_id} azure_tenant_id=${var.tenant_id} azure_aad_client_id=${var.client_id} azure_aad_client_secret=${var.client_secret} azure_location=${var.location}'"]
   }
+}
 
-  # provisioner "remote-exec" {
-  #   when    = "destroy"
-  #   inline = ["ANSIBLE_CONFIG=k8s-kubespray/inventory/azure/ansible.cfg ansible-playbook --extra-vars is_register=false --vault-password-file=k8s-kubespray/password k8s-kubespray/customized/util-redhat-subscription.yml --become"]
-  # }
-  
+
+resource "null_resource" "clean-up-redhat-licenses" {
+  depends_on = ["azurerm_virtual_machine.master-vm", "azurerm_virtual_machine.node-vm"]
+  connection {
+    user = "${var.admin_username}"
+    host = "${azurerm_public_ip.master-lb-publicip.ip_address}"
+    port =  "2221"
+    private_key = "${tls_private_key.ansible_key.private_key_pem}"
+  }
+
+  provisioner "remote-exec" {
+    when    = "destroy"
+    inline = ["ANSIBLE_CONFIG=kubespray/inventory/azure/ansible.cfg ansible-playbook --vault-password-file=kubespray/password kubespray/customized/util-redhat-subscription.yml --become --extra-vars is_register=false -vvv"]
+  }
 }
