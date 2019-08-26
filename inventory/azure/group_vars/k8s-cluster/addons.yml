@@ -24,6 +24,7 @@ registry_storage_class: "{{ volume_storage_class_name }}"
 # Kubernetes dashboard
 # RBAC required. see docs/getting-started.md for access details.
 dashboard_enabled: true
+dashboard_skip_login: true  
 
 # Helm deployment
 helm_enabled: true

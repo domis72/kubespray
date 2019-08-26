@@ -104,7 +104,7 @@ resource "null_resource" "k8s_build_cluster" {
 
 
 resource "null_resource" "clean-up-redhat-licenses" {
-  depends_on = ["azurerm_virtual_machine.master-vm", "azurerm_virtual_machine.node-vm"]
+  depends_on = ["local_file.ansible_pem", "azurerm_virtual_machine.master-vm", "azurerm_virtual_machine.node-vm"]
   connection {
     user = "${var.admin_username}"
     host = "${azurerm_public_ip.master-lb-publicip.ip_address}"
