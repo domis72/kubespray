@@ -112,8 +112,8 @@ resource "null_resource" "clean-up-redhat-licenses" {
     private_key = "${tls_private_key.ansible_key.private_key_pem}"
   }
 
-  provisioner "remote-exec" {
-    when    = "destroy"
-    inline = ["ANSIBLE_CONFIG=kubespray/inventory/azure/ansible.cfg ansible-playbook --vault-password-file=kubespray/password kubespray/customized/util-redhat-subscription.yml --become --extra-vars is_register=false -vvv"]
-  }
+  # provisioner "remote-exec" {
+  #   when    = "destroy"
+  #   inline = ["ANSIBLE_CONFIG=kubespray/inventory/azure/ansible.cfg ansible-playbook --vault-password-file=kubespray/password kubespray/customized/util-redhat-subscription.yml --become --extra-vars is_register=false -vvv"]
+  # }
 }
