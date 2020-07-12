@@ -3,7 +3,7 @@
 - import_playbook: util-disable-firewalld.yml
 
 - import_playbook: util-redhat-subscription.yml
-  when: ansible_os_family == "RedHat"
+  when: ansible_distribution == "RedHat"
 
 - import_playbook: util-dnsmasq.yml
   when: install_dnsmasq is defined and install_dnsmasq
