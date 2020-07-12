@@ -74,18 +74,21 @@ variable "master_vm_size" {
   #   "version": "8.0.2019050711"
   # },
 variable "vm_image_publisher" {
-  default = "RedHat"
+  #default = "RedHat"
+  default = "OpenLogic"
 }
 variable "vm_image_offer" {
-  default = "RHEL"
+  #default = "RHEL"
+  default = "CentOS"
 }
 
 variable "vm_image_sku" {
-  default = "7.5"
+  default = "7.6"
 }
 
 variable "vm_image_version" {
-  default = "7.5.2018081519" #"latest"
+  #default = "7.5.2018081519" #"latest"
+  default = "latest"
 }
 
 variable "admin_username" {
