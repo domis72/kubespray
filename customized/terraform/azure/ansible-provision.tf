@@ -5,12 +5,12 @@ resource "tls_private_key" "ansible_key" {
 }
 
 resource "local_file" "ansible_pem" {
-    content     = "${tls_private_key.ansible_key.private_key_pem}"
+    content     = tls_private_key.ansible_key.private_key_pem
     filename = "${path.module}/ansible.pem"
 }
 
 resource "null_resource" "ansible_pem_permission" {
-  depends_on = ["local_file.ansible_pem"]
+  depends_on = [local_file.ansible_pem]
   provisioner "local-exec" {
     command = "chmod 600 ${path.module}/ansible.pem"
   }
@@ -19,18 +19,18 @@ resource "null_resource" "ansible_pem_permission" {
 
 resource "null_resource" "ansible_host_provision" {
   count = 1
-  depends_on = ["azurerm_virtual_machine.master-vm"]
+  depends_on = [azurerm_virtual_machine.master-vm]
 
   connection {
     type     = "ssh"
-    host = "${azurerm_public_ip.master-lb-publicip.ip_address}"
+    host = azurerm_public_ip.master-lb-publicip.ip_address
     port = "2221"
-    user = "${var.admin_username}"
-    private_key = "${tls_private_key.ansible_key.private_key_pem}"
+    user = var.admin_username
+    private_key = tls_private_key.ansible_key.private_key_pem
   }
 
   provisioner "file" {
-    content = "${tls_private_key.ansible_key.private_key_pem}"
+    content = tls_private_key.ansible_key.private_key_pem
     destination = "/home/${var.admin_username}/.ssh/id_rsa"
   }
 
@@ -39,7 +39,7 @@ resource "null_resource" "ansible_host_provision" {
     inline = [ 
       "chmod 600 /home/${var.admin_username}/.ssh/id_rsa",
       "sudo rpm -ivh http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm", 
-      "sudo yum install  -y git python-pip", 
+      "sudo yum install  -y git python-pip && sudo pip install --upgrade pip", 
       "git clone https://github.com/sorididim11/kubespray.git", 
       "sudo pip install  -r  /home/${var.admin_username}/kubespray/requirements.txt"
     ]
@@ -53,7 +53,7 @@ resource "null_resource" "ansible_host_provision" {
 }
 
 resource "local_file" "ansible_inventory" {
-  depends_on = ["azurerm_virtual_machine.master-vm", "azurerm_virtual_machine.node-vm", "null_resource.ansible_host_provision"]
+  depends_on = [azurerm_virtual_machine.master-vm, azurerm_virtual_machine.node-vm, null_resource.ansible_host_provision]
   filename = "../../../inventory/azure/hosts"
   content =  <<EOF
 ${join("\n", formatlist("%s ansible_host=%s ip=%s", azurerm_virtual_machine.master-vm.*.name , azurerm_network_interface.master-nic.*.private_ip_address, azurerm_network_interface.master-nic.*.private_ip_address))}
@@ -80,15 +80,15 @@ EOF
 
 resource "null_resource" "k8s_build_cluster" {
   count = 1
-  depends_on = ["local_file.ansible_inventory"]
+  depends_on = [local_file.ansible_inventory]
   triggers = {
     content = "${local_file.ansible_inventory.content}"
   }
   connection {
-      user = "${var.admin_username}"
-      host = "${azurerm_public_ip.master-lb-publicip.ip_address}"
+      user = var.admin_username
+      host = azurerm_public_ip.master-lb-publicip.ip_address
       port =  "2221"
-      private_key = "${tls_private_key.ansible_key.private_key_pem}"
+      private_key = tls_private_key.ansible_key.private_key_pem
   }
 # copy host file to ansible host, master[0]
   provisioner "file" {
@@ -104,12 +104,12 @@ resource "null_resource" "k8s_build_cluster" {
 
 
 resource "null_resource" "clean-up-redhat-licenses" {
-  depends_on = ["local_file.ansible_pem", "azurerm_virtual_machine.master-vm", "azurerm_virtual_machine.node-vm"]
+  depends_on = [local_file.ansible_pem, azurerm_virtual_machine.master-vm, azurerm_virtual_machine.node-vm]
   connection {
-    user = "${var.admin_username}"
-    host = "${azurerm_public_ip.master-lb-publicip.ip_address}"
+    user = var.admin_username
+    host = azurerm_public_ip.master-lb-publicip.ip_address
     port =  "2221"
-    private_key = "${tls_private_key.ansible_key.private_key_pem}"
+    private_key = tls_private_key.ansible_key.private_key_pem
   }
 
   # provisioner "remote-exec" {

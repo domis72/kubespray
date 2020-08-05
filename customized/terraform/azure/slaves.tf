@@ -1,7 +1,7 @@
 resource "azurerm_availability_set" "node-as" {
   name                = "${var.resource_name_prefix}-node-as"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.cluster-group.name
   managed                      = "true"
   platform_fault_domain_count  = 3
   platform_update_domain_count = 10
@@ -11,17 +11,17 @@ resource "azurerm_availability_set" "node-as" {
 
 resource "azurerm_subnet" "node-subnet" {
   name                = "${var.resource_name_prefix}-node-subnet"
-  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
+  resource_group_name = azurerm_resource_group.cluster-group.name
 
-  virtual_network_name = "${azurerm_virtual_network.vnet.name}"
-  address_prefix       = "${var.node_subnet_cidr}"
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefix       = var.node_subnet_cidr
 }
 
 
 resource "azurerm_network_security_group" "node-nsg" {
   name                = "${var.resource_name_prefix}-node-nsg"
-  resource_group_name = "${azurerm_resource_group.cluster-group.name}"
-  location            = "${var.location}"
+  resource_group_name = azurerm_resource_group.cluster-group.name
+  location            = var.location
 
   security_rule {
     name                       = "pub_inbound_22_tcp_ssh"
@@ -41,15 +41,15 @@ resource "azurerm_network_security_group" "node-nsg" {
 
 
 resource "azurerm_network_interface" "slave-nic" {
-  count = "${var.num_slaves}"
+  count = var.num_slaves
 	name = "${var.resource_name_prefix}-slave-nic-${count.index}"
-	location = "${var.location}"
-	resource_group_name = "${azurerm_resource_group.cluster-group.name}"
-	network_security_group_id = "${azurerm_network_security_group.node-nsg.id}"
+	location = var.location
+	resource_group_name = azurerm_resource_group.cluster-group.name
+	network_security_group_id = azurerm_network_security_group.node-nsg.id
 
 	ip_configuration {
 		name = "nic_config"
-		subnet_id = "${azurerm_subnet.node-subnet.id}"
+		subnet_id = azurerm_subnet.node-subnet.id
 		private_ip_address_allocation = "Dynamic"
 		#public_ip_address_id = "${element(azurerm_public_ip.k8s-slave-public-ip.*.id,count.index)}"
 	#	load_balancer_backend_address_pools_ids = ["${azurerm_lb_backend_address_pool.lb-backend-pool.id}"]
@@ -61,17 +61,17 @@ resource "azurerm_network_interface" "slave-nic" {
 
 
 resource "azurerm_virtual_machine" "node-vm" {
-  count = "${var.num_slaves}"
+  count = var.num_slaves
 	name = "${var.resource_name_prefix}-s${count.index}"
-	location = "${var.location}"
+	location = var.location
 	
-	resource_group_name = "${azurerm_resource_group.cluster-group.name}"
-    availability_set_id = "${azurerm_availability_set.node-as.id}"
+	resource_group_name = azurerm_resource_group.cluster-group.name
+    availability_set_id = azurerm_availability_set.node-as.id
 
     network_interface_ids = [
-      "${element(azurerm_network_interface.slave-nic.*.id, count.index)}",
+      element(azurerm_network_interface.slave-nic.*.id, count.index),
     ]
-	vm_size = "${var.master_vm_size}"
+	vm_size = var.master_vm_size
 
 	storage_os_disk {
 		name = "slaveOsDisk${count.index}"
@@ -81,22 +81,22 @@ resource "azurerm_virtual_machine" "node-vm" {
 	}	
 
 	storage_image_reference {
-		publisher = "${var.vm_image_publisher}"
-		offer = "${var.vm_image_offer}"
-		sku = "${var.vm_image_sku}"
-		version = "${var.vm_image_version}"
+		publisher = var.vm_image_publisher
+		offer = var.vm_image_offer
+		sku = var.vm_image_sku
+		version = var.vm_image_version
 	}
 
 	os_profile {
 		computer_name = "${var.resource_name_prefix}-s${count.index}"
-		admin_username  = "${var.admin_username}"
+		admin_username  = var.admin_username
 	}
 
 	os_profile_linux_config {
 		disable_password_authentication = true
 		ssh_keys {
 			path = "/home/${var.admin_username}/.ssh/authorized_keys"
-			key_data = "${chomp(tls_private_key.ansible_key.public_key_openssh)}"
+			key_data = chomp(tls_private_key.ansible_key.public_key_openssh)
 		}
 	}
 }
